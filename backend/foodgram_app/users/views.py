@@ -45,6 +45,11 @@ class UserViewSet(viewsets.ModelViewSet):
         self.get_object = self.get_instance
         return self.retrieve(request)
 
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        instance.set_password(instance.password)
+        instance.save()
+
 
 class CustomAuthToken(ObtainAuthToken):
     serializer_class = CastomAuthTokenSerializer

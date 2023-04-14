@@ -34,12 +34,13 @@ class CastomAuthTokenSerializer(serializers.Serializer):
 
         if email and password:
             user = get_object_or_404(User, email=email)
-            if not user.check_password(password):
-                msg = "not valid password"
-                raise serializers.ValidationError(msg, code="authorization")
             if not user:
                 msg = "Unable to log in with provided credentials."
                 raise serializers.ValidationError(msg, code="authorization")
+            if not user.check_password(password):
+                msg = "not valid password"
+                raise serializers.ValidationError(msg, code="authorization")
+
         else:
             msg = 'Must include "email" and "password".'
             raise serializers.ValidationError(msg, code="authorization")
