@@ -26,9 +26,9 @@ SECRET_KEY = (
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "users.apps.UsersConfig",
+    "tags.apps.TagsConfig",
     "recipes.apps.RecipesConfig",
+    "ingredients.apps.IngredientsConfig",
 ]
 
 MIDDLEWARE = [
@@ -61,6 +63,8 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny"),
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 100,
 }
 
 ROOT_URLCONF = "foodgram_app.urls"
