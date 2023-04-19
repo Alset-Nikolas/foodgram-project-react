@@ -2,6 +2,7 @@ version: '3.3'
 services:
 
   frontend:
+    container_name: yandex_dimplom_frontend
     build:
       context: ../frontend
       dockerfile: Dockerfile
@@ -10,16 +11,18 @@ services:
     depends_on:
       - backend
   backend:
+    container_name: yandex_dimplom_backend
     build:
       context: ../backend
       dockerfile: Dockerfile
     volumes:
-      - staticfiles_value:/foodgram_app/static/
-      - media_value:/foodgram_app/media/
-      - ./:/backend
+      - staticfiles_value:/backend_foodgram_app/foodgram_app/static/
+      - media_value:/backend_foodgram_app/foodgram_app/media/
+      - ../backend:/backend_foodgram_app
     ports:
       - "8000:8000"
   nginx:
+    container_name: yandex_dimplom_nginx
     image: nginx:1.19.3
     ports:
       - "80:80"

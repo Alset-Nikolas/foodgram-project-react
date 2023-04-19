@@ -7,6 +7,10 @@ from ingredients.models import Ingredients
 User = get_user_model()
 
 
+def user_directory_path(instance, filename):
+    return "recipes/{0}/{1}".format(instance.id, filename)
+
+
 # Create your models here.
 class Recipe(models.Model):
     author = models.ForeignKey(
@@ -15,7 +19,7 @@ class Recipe(models.Model):
         related_name="recipes",
         verbose_name="автор",
     )
-    image = models.ImageField(upload_to="recipes/")
+    image = models.ImageField(upload_to=user_directory_path)
     name = models.CharField(max_length=200)
     text = models.TextField()
     cooking_time = models.IntegerField()
@@ -76,3 +80,26 @@ class RecipeIngredients(models.Model):
 
     def __str__(self):
         return f"{self.recipe.name} ({self.ingredient.name} {self.amount})"
+
+
+class FavoriteRecipe(models.Model):
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        verbose_name="рецепт",
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="favorites",
+        verbose_name="пользователь",
+    )
+
+    class Meta:
+        verbose_name = "Избранные рецепты"
+        verbose_name_plural = "Избранный рецепт"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "recipe"], name="unique favorits"
+            )
+        ]

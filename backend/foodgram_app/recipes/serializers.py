@@ -3,66 +3,15 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 from django.core.validators import validate_email
 from django.shortcuts import get_object_or_404
-from .models import Recipe, RecipeIngredients
+from .models import Recipe, RecipeIngredients, FavoriteRecipe
 from tags.models import Tags
-from users.serializers import UserSerializer
 from tags.serializers import TagSerializer
 from ingredients.models import Ingredients
+from general_settings.serializers import UserSerializer
+from drf_extra_fields.fields import Base64ImageField
 
 
-class Base64ImageField(serializers.ImageField):
-    """
-    A Django REST framework field for handling image-uploads through raw post data.
-    It uses base64 for encoding and decoding the contents of the file.
-
-    Heavily based on
-    https://github.com/tomchristie/django-rest-framework/pull/1268
-
-    Updated for Django REST framework 3.
-    """
-
-    def to_internal_value(self, data):
-        from django.core.files.base import ContentFile
-        import base64
-        import six
-        import uuid
-
-        # Check if this is a base64 string
-        if isinstance(data, six.string_types):
-            # Check if the base64 string is in the "data:" format
-            if "data:" in data and ";base64," in data:
-                # Break out the header from the base64 content
-                header, data = data.split(";base64,")
-
-            # Try to decode the file. Return validation error if it fails.
-            try:
-                decoded_file = base64.b64decode(data)
-            except TypeError:
-                self.fail("invalid_image")
-
-            # Generate file name:
-            file_name = str(uuid.uuid4())[
-                :12
-            ]  # 12 characters are more than enough.
-            # Get the file name extension:
-            file_extension = self.get_file_extension(file_name, decoded_file)
-
-            complete_file_name = "%s.%s" % (
-                file_name,
-                file_extension,
-            )
-
-            data = ContentFile(decoded_file, name=complete_file_name)
-
-        return super(Base64ImageField, self).to_internal_value(data)
-
-    def get_file_extension(self, file_name, decoded_file):
-        import imghdr
-
-        extension = imghdr.what(file_name, decoded_file)
-        extension = "jpg" if extension == "jpeg" else extension
-
-        return extension
+User = get_user_model()
 
 
 class RecipeIngredientsReadSerilizer(serializers.ModelSerializer):
@@ -115,6 +64,13 @@ class ReadRecipeSerializer(serializers.ModelSerializer):
             "ingredients",
         ]
 
+    def to_representation(self, instance):
+        data = super(ReadRecipeSerializer, self).to_representation(instance)
+        image_path = str(data.get("image")).replace(":8000", "")
+        image_path = image_path.replace("/media", "/api/media")
+        data["image"] = image_path
+        return data
+
 
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
@@ -161,3 +117,71 @@ class WriteRecipeSerializer(ReadRecipeSerializer):
     def to_representation(self, instance):
         serializer = ReadRecipeSerializer(instance)
         return serializer.data
+
+
+class MainRecipeSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
+    image = Base64ImageField(
+        max_length=None,
+        use_url=True,
+        read_only=True,
+    )
+
+    def validate_cooking_time(self, cooking_time):
+        if cooking_time < 1:
+            raise serializers.ValidationError("cooking_time >= 1")
+        return super().validate(cooking_time)
+
+    class Meta:
+        model = Recipe
+        fields = [
+            "id",
+            "name",
+            "image",
+            "cooking_time",
+        ]
+
+
+class ReadFavoriteRecipeSerializer(MainRecipeSerializer):
+    id = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Recipe
+        fields = [
+            "id",
+            "name",
+            "image",
+            "cooking_time",
+        ]
+        extra_kwargs = {
+            "name": {"read_only": True},
+            "image": {"read_only": True},
+            "cooking_time": {"read_only": True},
+        }
+
+    def create(self, **kwargs):
+        return FavoriteRecipe.objects.create(**kwargs)
+
+    def validate(self, data, **args):
+        user = self.initial_data.get("user")
+        recipe = self.initial_data.get("recipe")
+        if recipe.author == user:
+            raise serializers.ValidationError({"err": "Это и так ваш рецепт!"})
+        if recipe in user.get_favorites():
+            raise serializers.ValidationError({"err": "Уже в избранном!"})
+        return data
+
+
+class FavoriteRecipeSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
+
+    def validate_cooking_time(self, cooking_time):
+        if cooking_time < 1:
+            raise serializers.ValidationError("cooking_time >= 1")
+        return super().validate(cooking_time)
+
+    class Meta:
+        model = FavoriteRecipe
+        fields = [
+            "id",
+        ]

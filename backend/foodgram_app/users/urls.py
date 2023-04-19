@@ -8,6 +8,7 @@ from .views import (
 )
 
 router = routers.DefaultRouter()
+
 router.register(r"users", UserViewSet)
 
 urlpatterns = [

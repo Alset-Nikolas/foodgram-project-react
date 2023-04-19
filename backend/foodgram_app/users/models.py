@@ -31,7 +31,37 @@ class User(AbstractUser):
         help_text="Фамилия",
     )
 
+    def get_subscriptions(self):
+        return [user.author for user in self.subscriptions.all()]
+
+    def get_favorites(self):
+        return [favorite.recipe for favorite in self.favorites.all()]
+
     class Meta:
         ordering = ["username"]
         verbose_name = "пользователь"
         verbose_name_plural = "пользователи"
+
+
+class Subscriptions(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="Подписки",
+        related_name="subscriptions",
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="Подписчики",
+        related_name="subscribers",
+    )
+
+    class Meta:
+        verbose_name = "Подписка"
+        verbose_name_plural = "Подписки"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "author"], name="unique subscriptions"
+            )
+        ]

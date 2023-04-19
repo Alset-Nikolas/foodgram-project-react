@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate
 from django.core.validators import validate_email
 from django.shortcuts import get_object_or_404
 from .models import Ingredients
-from users.serializers import UserSerializer
+from general_settings.serializers import UserSerializer
 
 
 class IngredientsSerializer(serializers.ModelSerializer):
@@ -17,5 +17,3 @@ class IngredientsSerializer(serializers.ModelSerializer):
             "name",
             "measurement_unit",
         ]
-
-
