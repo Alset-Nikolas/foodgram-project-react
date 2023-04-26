@@ -13,4 +13,8 @@ WORKDIR /backend_foodgram_app/foodgram_app
 
 
 # CMD ["python3", "manage.py", "collectstatic"]
-CMD ["gunicorn", "--bind", ":8000", "foodgram_app.wsgi:application", "--log-level", "debug"]
+# CMD ["gunicorn", "--bind", ":8000", "foodgram_app.wsgi:application", "--log-level", "debug"]
+
+ADD docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod a+x /docker-entrypoint.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]
