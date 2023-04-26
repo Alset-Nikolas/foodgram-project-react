@@ -6,5 +6,5 @@ urlpatterns = [
     path("api/", include("recipes.urls")),
     path("api/", include("tags.urls")),
     path("api/", include("ingredients.urls")),
-    path("admin/", admin.site.urls),
+    path("api/admin/", admin.site.urls),
 ]

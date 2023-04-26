@@ -8,3 +8,10 @@ class IsAuthorOrReadOnly(permissions.IsAuthenticatedOrReadOnly):
         if request.user.is_staff:
             return True
         return False
+
+    def has_permission(self, request, view):
+        return bool(
+            request.method in permissions.SAFE_METHODS
+            or request.user
+            and request.user.is_authenticated
+        )

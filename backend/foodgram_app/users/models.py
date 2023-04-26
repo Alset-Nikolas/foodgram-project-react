@@ -37,6 +37,9 @@ class User(AbstractUser):
     def get_favorites(self):
         return [favorite.recipe for favorite in self.favorites.all()]
 
+    def get_shopping(self):
+        return [shopping.recipe for shopping in self.shopping.all()]
+
     class Meta:
         ordering = ["username"]
         verbose_name = "пользователь"

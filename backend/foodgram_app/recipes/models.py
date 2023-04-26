@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from tags.models import Tags
 from ingredients.models import Ingredients
+import typing as t
 
 User = get_user_model()
 
@@ -38,6 +39,9 @@ class Recipe(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
+    def get_ingredients(self):
+        return self.ingredients.all()
 
 
 class RecipeTags(models.Model):
@@ -87,6 +91,7 @@ class FavoriteRecipe(models.Model):
         Recipe,
         on_delete=models.CASCADE,
         verbose_name="рецепт",
+        related_name="users_favorites",
     )
     user = models.ForeignKey(
         User,
@@ -101,5 +106,29 @@ class FavoriteRecipe(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=["user", "recipe"], name="unique favorits"
+            )
+        ]
+
+
+class ShoppingRecipe(models.Model):
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        verbose_name="рецепт",
+        related_name="users_shopping",
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="shopping",
+        verbose_name="пользователь",
+    )
+
+    class Meta:
+        verbose_name = "Покупки"
+        verbose_name_plural = "Покупка"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "recipe"], name="unique shopping"
             )
         ]

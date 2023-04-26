@@ -12,3 +12,6 @@ class Ingredients(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
+    def get_recipe_amount(self, recipe):
+        return self.ingredients_amount.filter(recipe=recipe).first().amount

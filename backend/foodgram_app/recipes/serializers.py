@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 from django.core.validators import validate_email
 from django.shortcuts import get_object_or_404
-from .models import Recipe, RecipeIngredients, FavoriteRecipe
+from .models import Recipe, RecipeIngredients, FavoriteRecipe, ShoppingRecipe
 from tags.models import Tags
 from tags.serializers import TagSerializer
 from ingredients.models import Ingredients
@@ -45,11 +45,39 @@ class ReadRecipeSerializer(serializers.ModelSerializer):
         max_length=None,
         use_url=True,
     )
+    is_favorited = serializers.SerializerMethodField(
+        read_only=True,
+    )
+    is_in_shopping_cart = serializers.SerializerMethodField(
+        read_only=True,
+    )
 
     def validate_cooking_time(self, cooking_time):
         if cooking_time < 1:
             raise serializers.ValidationError("cooking_time >= 1")
         return super().validate(cooking_time)
+
+    def get_is_favorited(self, recipe):
+        request = self.context.get("request")
+        if not request:
+            return False
+        user = request.user
+        return (
+            FavoriteRecipe.objects.filter(user=user, recipe=recipe).exists()
+            if user.is_authenticated
+            else False
+        )
+
+    def get_is_in_shopping_cart(self, recipe):
+        request = self.context.get("request")
+        if not request:
+            return False
+        user = request.user
+        return (
+            ShoppingRecipe.objects.filter(user=user, recipe=recipe).exists()
+            if user.is_authenticated
+            else False
+        )
 
     class Meta:
         model = Recipe
@@ -62,6 +90,8 @@ class ReadRecipeSerializer(serializers.ModelSerializer):
             "cooking_time",
             "tags",
             "ingredients",
+            "is_favorited",
+            "is_in_shopping_cart",
         ]
 
     def to_representation(self, instance):
@@ -165,23 +195,62 @@ class ReadFavoriteRecipeSerializer(MainRecipeSerializer):
     def validate(self, data, **args):
         user = self.initial_data.get("user")
         recipe = self.initial_data.get("recipe")
-        if recipe.author == user:
-            raise serializers.ValidationError({"err": "Это и так ваш рецепт!"})
         if recipe in user.get_favorites():
             raise serializers.ValidationError({"err": "Уже в избранном!"})
         return data
 
 
-class FavoriteRecipeSerializer(serializers.ModelSerializer):
+class FavoriteRecipeSerializer(MainRecipeSerializer):
+    class Meta:
+        model = Recipe
+        fields = [
+            "id",
+            "name",
+            "image",
+            "cooking_time",
+        ]
+        extra_kwargs = {
+            "name": {"read_only": True},
+            "image": {"read_only": True},
+            "cooking_time": {"read_only": True},
+        }
+
+
+class ShoppingRecipeSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
 
-    def validate_cooking_time(self, cooking_time):
-        if cooking_time < 1:
-            raise serializers.ValidationError("cooking_time >= 1")
-        return super().validate(cooking_time)
-
     class Meta:
-        model = FavoriteRecipe
+        model = ShoppingRecipe
         fields = [
             "id",
         ]
+
+
+class ReadShoppingRecipeSerializer(MainRecipeSerializer):
+    id = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Recipe
+        fields = [
+            "id",
+            "name",
+            "image",
+            "cooking_time",
+        ]
+        extra_kwargs = {
+            "name": {"read_only": True},
+            "image": {"read_only": True},
+            "cooking_time": {"read_only": True},
+        }
+
+    def create(self, **kwargs):
+        return ShoppingRecipe.objects.create(**kwargs)
+
+    def validate(self, data, **args):
+        user = self.initial_data.get("user")
+        recipe = self.initial_data.get("recipe")
+        if recipe in user.get_shopping():
+            raise serializers.ValidationError(
+                {"err": "Такой рецепт уже добавлен"}
+            )
+        return data
