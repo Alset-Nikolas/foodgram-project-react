@@ -10,7 +10,7 @@ echo "Apply database migrations"
 python manage.py migrate
 
 echo "Create admin"
-python manage.py createsuperuser --email=$DJANGO_SUPERUSER_EMAIL --noinput || echo "admin already created"
+python manage.py createsuperuser --email=$DJANGO_SUPERUSER_EMAIL --username=$DJANGO_SUPERUSER_USERNAME --noinput || echo "admin already created"
 
 echo "Apply database static"
 python manage.py collectstatic --noinput

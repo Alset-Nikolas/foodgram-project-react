@@ -13,3 +13,4 @@ class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = IngredientsSerializer
     permission_classes = [permissions.AllowAny]
     pagination_class = None
+    search_fields = ("name",)
