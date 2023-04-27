@@ -5,8 +5,6 @@ from rest_framework import viewsets, mixins
 from .models import Ingredients
 from .serializers import IngredientsSerializer
 
-# Create your views here.
-
 
 class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredients.objects.all()

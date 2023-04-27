@@ -32,13 +32,13 @@ class User(AbstractUser):
     )
 
     def get_subscriptions(self):
-        return [user.author for user in self.subscriptions.all()]
+        return self.subscriptions.values_list("author").all()
 
     def get_favorites(self):
-        return [favorite.recipe for favorite in self.favorites.all()]
+        return self.favorites.values_list("recipe").all()
 
     def get_shopping(self):
-        return [shopping.recipe for shopping in self.shopping.all()]
+        return self.shopping.values_list("recipe").all()
 
     class Meta:
         ordering = ["username"]

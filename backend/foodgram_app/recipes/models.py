@@ -4,15 +4,20 @@ from django.shortcuts import get_object_or_404
 from tags.models import Tags
 from ingredients.models import Ingredients
 import typing as t
+from django.core.exceptions import ValidationError
 
 User = get_user_model()
 
 
 def user_directory_path(instance, filename):
-    return "recipes/{0}/{1}".format(instance.id, filename)
+    return "recipes/{0}".format(filename)
 
 
-# Create your models here.
+def validate_range(value):
+    if value < 1:
+        raise ValidationError("cooking_time > 1 ")
+
+
 class Recipe(models.Model):
     author = models.ForeignKey(
         User,
@@ -23,7 +28,7 @@ class Recipe(models.Model):
     image = models.ImageField(upload_to=user_directory_path)
     name = models.CharField(max_length=200)
     text = models.TextField()
-    cooking_time = models.IntegerField()
+    cooking_time = models.IntegerField(validators=[validate_range])
 
     tags = models.ManyToManyField(
         Tags, through="RecipeTags", verbose_name="Теги"
@@ -76,7 +81,7 @@ class RecipeIngredients(models.Model):
         verbose_name="ингредиент",
         related_name="ingredients_amount",
     )
-    amount = models.IntegerField()
+    amount = models.IntegerField(validators=[validate_range])
 
     class Meta:
         verbose_name = "связь рецепт-ингредиента"

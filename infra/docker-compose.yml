@@ -45,6 +45,19 @@ services:
       - media_value:/var/html/api/media/
     depends_on:
       - frontend
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   depends_on:
+  #     - db
+  #   environment:
+  #     - PGADMIN_DEFAULT_EMAIL=z@mail.ru
+  #     - PGADMIN_DEFAULT_PASSWORD=z
+  #     - PGADMIN_LISTEN_ADDRESS=0.0.0.0
+  #     - PGADMIN_LISTEN_PORT=5555
+  #   volumes:
+  #     - ../data/:/backend_foodgram_app/data/
+  #   ports:
+  #     - "5555:5555"
 
 volumes:
   staticfiles_value:

@@ -22,7 +22,6 @@ from django.http import HttpResponse
 import typing as t
 
 
-# Create your views here.
 class RecipeBaseManager:
     def get_object_recipe(self):
         return self.request.data.get("recipe")

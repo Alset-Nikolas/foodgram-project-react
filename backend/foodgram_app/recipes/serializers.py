@@ -52,6 +52,21 @@ class ReadRecipeSerializer(serializers.ModelSerializer):
         read_only=True,
     )
 
+    class Meta:
+        model = Recipe
+        fields = [
+            "id",
+            "author",
+            "image",
+            "name",
+            "text",
+            "cooking_time",
+            "tags",
+            "ingredients",
+            "is_favorited",
+            "is_in_shopping_cart",
+        ]
+
     def validate_cooking_time(self, cooking_time):
         if cooking_time < 1:
             raise serializers.ValidationError("cooking_time >= 1")
@@ -79,21 +94,6 @@ class ReadRecipeSerializer(serializers.ModelSerializer):
             else False
         )
 
-    class Meta:
-        model = Recipe
-        fields = [
-            "id",
-            "author",
-            "image",
-            "name",
-            "text",
-            "cooking_time",
-            "tags",
-            "ingredients",
-            "is_favorited",
-            "is_in_shopping_cart",
-        ]
-
     def to_representation(self, instance):
         data = super(ReadRecipeSerializer, self).to_representation(instance)
         image_path = str(data.get("image")).replace(":8000", "")
@@ -119,14 +119,17 @@ class WriteRecipeSerializer(ReadRecipeSerializer):
     def __create_tags_and_ingredients(self, instance, tags, ingredients_info):
         [instance.tags.add(tag) for tag in tags]
         instance.save()
-        for info_ingredient in ingredients_info:
-            RecipeIngredients.objects.create(
+        items = [
+            RecipeIngredients(
                 recipe=instance,
                 ingredient=Ingredients.objects.get(
                     pk=info_ingredient.get("ingredient").get("id")
                 ),
                 amount=info_ingredient.get("amount"),
             )
+            for info_ingredient in ingredients_info
+        ]
+        RecipeIngredients.objects.bulk_create(items)
 
     def create(self, validated_data):
         ingredients_info = validated_data.pop("recipeingredients_set")
