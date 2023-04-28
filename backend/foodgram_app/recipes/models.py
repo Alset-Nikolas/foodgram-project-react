@@ -5,17 +5,13 @@ from tags.models import Tags
 from ingredients.models import Ingredients
 import typing as t
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
 
 User = get_user_model()
 
 
 def user_directory_path(instance, filename):
     return "recipes/{0}".format(filename)
-
-
-def validate_range(value):
-    if value < 1:
-        raise ValidationError("cooking_time > 1 ")
 
 
 class Recipe(models.Model):
@@ -28,7 +24,7 @@ class Recipe(models.Model):
     image = models.ImageField(upload_to=user_directory_path)
     name = models.CharField(max_length=200)
     text = models.TextField()
-    cooking_time = models.IntegerField(validators=[validate_range])
+    cooking_time = models.IntegerField(validators=[MinValueValidator(1)])
 
     tags = models.ManyToManyField(
         Tags, through="RecipeTags", verbose_name="Теги"
@@ -81,7 +77,7 @@ class RecipeIngredients(models.Model):
         verbose_name="ингредиент",
         related_name="ingredients_amount",
     )
-    amount = models.IntegerField(validators=[validate_range])
+    amount = models.IntegerField(validators=[MinValueValidator(1)])
 
     class Meta:
         verbose_name = "связь рецепт-ингредиента"

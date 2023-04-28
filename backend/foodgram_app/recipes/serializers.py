@@ -35,7 +35,6 @@ class RecipeIngredientWriteSerilizer(serializers.ModelSerializer):
 
 
 class ReadRecipeSerializer(serializers.ModelSerializer):
-    id = serializers.ReadOnlyField()
     author = UserSerializer(read_only=True)
     tags = TagSerializer(read_only=True, many=True)
     ingredients = RecipeIngredientsReadSerilizer(
@@ -153,17 +152,11 @@ class WriteRecipeSerializer(ReadRecipeSerializer):
 
 
 class MainRecipeSerializer(serializers.ModelSerializer):
-    id = serializers.ReadOnlyField()
     image = Base64ImageField(
         max_length=None,
         use_url=True,
         read_only=True,
     )
-
-    def validate_cooking_time(self, cooking_time):
-        if cooking_time < 1:
-            raise serializers.ValidationError("cooking_time >= 1")
-        return super().validate(cooking_time)
 
     class Meta:
         model = Recipe
@@ -176,8 +169,6 @@ class MainRecipeSerializer(serializers.ModelSerializer):
 
 
 class ReadFavoriteRecipeSerializer(MainRecipeSerializer):
-    id = serializers.ReadOnlyField()
-
     class Meta:
         model = Recipe
         fields = [
@@ -220,8 +211,6 @@ class FavoriteRecipeSerializer(MainRecipeSerializer):
 
 
 class ShoppingRecipeSerializer(serializers.ModelSerializer):
-    id = serializers.ReadOnlyField()
-
     class Meta:
         model = ShoppingRecipe
         fields = [
@@ -230,8 +219,6 @@ class ShoppingRecipeSerializer(serializers.ModelSerializer):
 
 
 class ReadShoppingRecipeSerializer(MainRecipeSerializer):
-    id = serializers.ReadOnlyField()
-
     class Meta:
         model = Recipe
         fields = [

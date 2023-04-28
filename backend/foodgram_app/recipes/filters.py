@@ -14,7 +14,7 @@ class RecipeFilter(FilterSet):
         super().__init__(data, queryset, request=request, prefix=prefix)
 
     def filter_is_in_shopping_cart(
-        self, queryset: QuerySet, name, is_in_shopping_cart
+        self, queryset: QuerySet, name: str, is_in_shopping_cart: bool
     ):
         if not self.user.is_authenticated or not is_in_shopping_cart:
             return queryset
