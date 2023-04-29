@@ -14,6 +14,7 @@ class RecipeFilter(FilterSet):
         super().__init__(data, queryset, request=request, prefix=prefix)
 
     def filter_tags(self, queryset, name, tags):
+        assert False, tags
         return queryset.filter(tags__name__contains=tags.split(","))
 
     def filter_is_in_shopping_cart(
