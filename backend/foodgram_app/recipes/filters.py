@@ -4,7 +4,7 @@ from django.db.models import QuerySet
 
 
 class RecipeFilter(FilterSet):
-    tags = CharFilter(field_name="tags__slug", lookup_expr="icontains")
+    tags = CharFilter(field_name="tags__slug", method="filter_tags")
     is_in_shopping_cart = BooleanFilter(method="filter_is_in_shopping_cart")
 
     def __init__(
@@ -12,6 +12,9 @@ class RecipeFilter(FilterSet):
     ):
         self.user = request.user
         super().__init__(data, queryset, request=request, prefix=prefix)
+
+    def filter_tags(self, queryset, name, tags):
+        return queryset.filter(tags__name__contains=tags.split(","))
 
     def filter_is_in_shopping_cart(
         self, queryset: QuerySet, name: str, is_in_shopping_cart: bool
