@@ -4,10 +4,8 @@ from django.db.models import QuerySet
 
 
 class RecipeFilter(FilterSet):
-    tags = CharFilter(field_name="tags__slug")
-    is_in_shopping_cart = BooleanFilter(
-        method="filter_is_in_shopping_cart", lookup_expr="in"
-    )
+    tags = CharFilter(field_name="tags__slug", lookup_expr="in")
+    is_in_shopping_cart = BooleanFilter(method="filter_is_in_shopping_cart")
 
     def __init__(
         self, data=None, queryset=None, *, request=None, prefix=None, **kwargs
