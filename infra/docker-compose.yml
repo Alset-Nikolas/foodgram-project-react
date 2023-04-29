@@ -12,8 +12,9 @@ services:
       - backend
   db:
     image: postgres:13.0-alpine
+    container_name: yandex_dimplom_postgres
     volumes:
-      - /var/lib/postgresql/data1/
+      - /var/lib/postgresql/yandex_diplom_data/
       - ../backend/docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
     env_file:
       - ./.env
@@ -47,6 +48,7 @@ services:
       - frontend
   pgadmin:
     image: dpage/pgadmin4
+    container_name: yandex_dimplom_pgadmin
     depends_on:
       - db
     environment:
