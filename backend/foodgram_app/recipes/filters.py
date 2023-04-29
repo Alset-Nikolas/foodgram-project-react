@@ -1,10 +1,21 @@
 from django_filters.rest_framework import FilterSet, CharFilter, BooleanFilter
 from .models import Recipe
 from django.db.models import QuerySet
+from django_filters import Filter, FilterSet
+
+
+class ListFilter(Filter):
+    def filter(self, qs, value):
+        if not value:
+            return qs
+        self.lookup_expr = "in"
+        self.field_name = "tags__slug"
+        values = value.split("&")
+        return super(ListFilter, self).filter(qs, values)
 
 
 class RecipeFilter(FilterSet):
-    tags = CharFilter(field_name="tags__slug", method="filter_tags")
+    tags = ListFilter(field_name="tags__slug")
     is_in_shopping_cart = BooleanFilter(method="filter_is_in_shopping_cart")
 
     def __init__(
