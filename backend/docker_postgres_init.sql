@@ -1,1 +1,1 @@
-CREATE DATABASE tacy_project_db;
+CREATE DATABASE postgres;
