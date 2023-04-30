@@ -13,5 +13,5 @@ echo "Apply database static"
 python manage.py collectstatic --noinput
 
 echo "start server"
-gunicorn --bind :8000 foodgram_app.wsgi:application 
+gunicorn foodgram_app.wsgi:application -w 2 -b :8000 --timeout 120 
 exec "$@"
