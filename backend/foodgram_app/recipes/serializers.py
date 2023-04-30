@@ -1,15 +1,14 @@
-from rest_framework import serializers
-from django.contrib.auth import get_user_model
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from django.core.validators import validate_email
 from django.shortcuts import get_object_or_404
-from .models import Recipe, RecipeIngredients, FavoriteRecipe, ShoppingRecipe
+from drf_extra_fields.fields import Base64ImageField
+from general_settings.serializers import UserSerializer
+from ingredients.models import Ingredients
+from rest_framework import serializers
 from tags.models import Tags
 from tags.serializers import TagSerializer
-from ingredients.models import Ingredients
-from general_settings.serializers import UserSerializer
-from drf_extra_fields.fields import Base64ImageField
 
+from .models import FavoriteRecipe, Recipe, RecipeIngredients, ShoppingRecipe
 
 User = get_user_model()
 

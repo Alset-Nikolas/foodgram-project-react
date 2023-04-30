@@ -1,6 +1,5 @@
 from django.shortcuts import render
-from rest_framework import permissions
-from rest_framework import viewsets, mixins
+from rest_framework import mixins, permissions, viewsets
 
 from .models import Ingredients
 from .serializers import IngredientsSerializer

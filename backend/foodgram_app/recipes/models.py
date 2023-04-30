@@ -1,11 +1,12 @@
-from django.db import models
-from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404
-from tags.models import Tags
-from ingredients.models import Ingredients
 import typing as t
+
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
+from django.db import models
+from django.shortcuts import get_object_or_404
+from ingredients.models import Ingredients
+from tags.models import Tags
 
 User = get_user_model()
 

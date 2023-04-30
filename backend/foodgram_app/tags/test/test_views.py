@@ -1,8 +1,8 @@
 import typing as t
 
-from rest_framework.test import APITestCase, APIClient
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
+from rest_framework.test import APIClient, APITestCase
 from tags.models import Tags
 
 User = get_user_model()

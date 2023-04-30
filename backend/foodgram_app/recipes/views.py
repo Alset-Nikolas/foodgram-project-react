@@ -1,25 +1,20 @@
-from django.shortcuts import render
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, mixins
-from .models import Recipe, FavoriteRecipe, ShoppingRecipe
-from .serializers import (
-    ReadRecipeSerializer,
-    WriteRecipeSerializer,
-    ReadFavoriteRecipeSerializer,
-    FavoriteRecipeSerializer,
-    ShoppingRecipeSerializer,
-    ReadShoppingRecipeSerializer,
-    MainRecipeSerializer,
-)
-from rest_framework import permissions
-from .permissions import IsAuthorOrReadOnly
-from rest_framework.decorators import action
-from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
-from .filters import RecipeFilter
-from reportlab.pdfgen import canvas
-from django.http import HttpResponse
 import typing as t
+
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, render
+from django_filters.rest_framework import DjangoFilterBackend
+from reportlab.pdfgen import canvas
+from rest_framework import mixins, permissions, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
+
+from .filters import RecipeFilter
+from .models import FavoriteRecipe, Recipe, ShoppingRecipe
+from .permissions import IsAuthorOrReadOnly
+from .serializers import (FavoriteRecipeSerializer, MainRecipeSerializer,
+                          ReadFavoriteRecipeSerializer, ReadRecipeSerializer,
+                          ReadShoppingRecipeSerializer,
+                          ShoppingRecipeSerializer, WriteRecipeSerializer)
 
 
 class RecipeBaseManager:

@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import permissions, viewsets
+
 from .models import Tags
 from .serializers import TagSerializer
-from rest_framework import permissions
 
 
 # Create your views here.

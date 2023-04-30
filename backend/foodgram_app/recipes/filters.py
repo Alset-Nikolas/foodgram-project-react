@@ -1,10 +1,15 @@
-from django_filters.rest_framework import FilterSet, CharFilter, BooleanFilter
-from .models import Recipe
 from django.db.models import QuerySet
+from django_filters.rest_framework import (
+    BooleanFilter,
+    AllValuesMultipleFilter,
+    FilterSet,
+)
+
+from .models import Recipe
 
 
 class RecipeFilter(FilterSet):
-    tags = CharFilter(field_name="tags__slug")
+    tags = AllValuesMultipleFilter(field_name="tags__slug")
     is_in_shopping_cart = BooleanFilter(method="filter_is_in_shopping_cart")
 
     def __init__(

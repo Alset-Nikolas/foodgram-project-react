@@ -1,25 +1,17 @@
-from rest_framework import viewsets
-from rest_framework import permissions
-from django.contrib.auth import logout
-from .serializers import (
-    CastomAuthTokenSerializer,
-    ChangePasswordSerializer,
-    UserSubscriptionsSerializer,
-)
-from general_settings.serializers import UserSerializer
-from django.shortcuts import get_object_or_404
-from rest_framework.decorators import action
-from django.contrib.auth import get_user_model
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.authtoken.models import Token
-from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework import generics
-from rest_framework import status
-from rest_framework import viewsets, mixins
-from rest_framework.views import APIView
+from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.hashers import make_password
+from django.shortcuts import get_object_or_404
+from general_settings.serializers import UserSerializer
+from rest_framework import generics, mixins, permissions, status, viewsets
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from .models import Subscriptions
+from .serializers import (CastomAuthTokenSerializer, ChangePasswordSerializer,
+                          UserSubscriptionsSerializer)
 
 User = get_user_model()
 
