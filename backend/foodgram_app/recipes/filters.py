@@ -3,6 +3,7 @@ from django_filters.rest_framework import (
     BooleanFilter,
     AllValuesMultipleFilter,
     FilterSet,
+    CharFilter,
 )
 
 from .models import Recipe
@@ -12,6 +13,7 @@ class RecipeFilter(FilterSet):
     tags = AllValuesMultipleFilter(field_name="tags__slug")
     is_in_shopping_cart = BooleanFilter(method="filter_is_in_shopping_cart")
     is_favorited = BooleanFilter(method="filter_is_favorited")
+    author = CharFilter(field_name="author")
 
     def __init__(
         self, data=None, queryset=None, *, request=None, prefix=None, **kwargs
