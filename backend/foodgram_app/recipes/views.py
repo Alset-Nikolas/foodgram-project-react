@@ -11,10 +11,15 @@ from rest_framework.response import Response
 from .filters import RecipeFilter
 from .models import FavoriteRecipe, Recipe, ShoppingRecipe
 from .permissions import IsAuthorOrReadOnly
-from .serializers import (FavoriteRecipeSerializer, MainRecipeSerializer,
-                          ReadFavoriteRecipeSerializer, ReadRecipeSerializer,
-                          ReadShoppingRecipeSerializer,
-                          ShoppingRecipeSerializer, WriteRecipeSerializer)
+from .serializers import (
+    FavoriteRecipeSerializer,
+    MainRecipeSerializer,
+    ReadFavoriteRecipeSerializer,
+    ReadRecipeSerializer,
+    ReadShoppingRecipeSerializer,
+    ShoppingRecipeSerializer,
+    WriteRecipeSerializer,
+)
 
 
 class RecipeBaseManager:

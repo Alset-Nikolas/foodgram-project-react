@@ -10,8 +10,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Subscriptions
-from .serializers import (CastomAuthTokenSerializer, ChangePasswordSerializer,
-                          UserSubscriptionsSerializer)
+from .serializers import (
+    CastomAuthTokenSerializer,
+    ChangePasswordSerializer,
+    UserSubscriptionsSerializer,
+)
 
 User = get_user_model()
 
@@ -136,6 +139,6 @@ class ChangePasswordViewSet(APIView):
             user.password = make_password(serializer.data.get("new_password"))
             user.save()
 
-            return Response(status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

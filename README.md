@@ -14,4 +14,7 @@
 Проект нужно запустить в трёх контейнерах (nginx, PostgreSQL и Django) (контейнер frontend используется лишь для подготовки файлов) через docker-compose на вашем сервере в Яндекс.Облаке. Образ с проектом должен быть запушен на Docker Hub.
 
 Сервер: http://62.84.115.61/
-Admin: z@mail.ru / z
+Admin: admin@mail.ru / admin
+
+Адинка: http://62.84.115.61/api/admin/
+pgadmin: http://62.84.115.61:5555 (z@amail.ru/z)

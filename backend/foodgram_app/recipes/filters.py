@@ -11,6 +11,7 @@ from .models import Recipe
 class RecipeFilter(FilterSet):
     tags = AllValuesMultipleFilter(field_name="tags__slug")
     is_in_shopping_cart = BooleanFilter(method="filter_is_in_shopping_cart")
+    is_favorited = BooleanFilter(method="filter_is_favorited")
 
     def __init__(
         self, data=None, queryset=None, *, request=None, prefix=None, **kwargs
@@ -25,6 +26,14 @@ class RecipeFilter(FilterSet):
             return queryset
 
         return queryset.filter(users_shopping__user=self.user)
+
+    def filter_is_favorited(
+        self, queryset: QuerySet, name: str, is_favorited: bool
+    ):
+        if not self.user.is_authenticated or not is_favorited:
+            return queryset
+
+        return queryset.filter(users_favorites__user=self.user)
 
     class Meta:
         model = Recipe
