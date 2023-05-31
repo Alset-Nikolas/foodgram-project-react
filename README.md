@@ -1,7 +1,7 @@
 <h1 align="center">Дипломный проект курса от Яндекс Практикума <a href='https://practicum.yandex.ru/backend-developer'>Python-разработчик</a></h1>
 
 <h1 align="center">Привет </a> 
-<img src="https://github.com/blackcater/blackcater/raw/main/images/Hi.gif" height="32"/></h1>
+<img src="https://github.com/blackcater/blackcater/raw/main/images/Hi.gif" height="32" width="32"/></h1>
 <h3 align="center">Foodgram, «Продуктовый помощник» </h3>
 <p>
     На этом сервисе пользователи смогут публиковать рецепты, подписываться на публикации других пользователей, добавлять понравившиеся рецепты в список «Избранное», а перед походом в магазин скачивать сводный список продуктов, необходимых для приготовления одного или нескольких выбранных блюд.
